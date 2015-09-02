@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	
+	   <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true&libraries=places&language=en-US"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.js"></script>
+	
+	<script src="js/appl.js"></script>
+	<link href="css/styles.css" rel="stylesheet" type="text/css">
+	 <script>
+    </script>
+	<style>
+		.glyphicon {
+		top:7px;
+		float:right;
+		padding-left:5px;
+		cursor:pointer;
+		}
+		input[type=date]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+}
+.page-header
+{
+margin-top:0px;
+}
+.jumbotron{
+padding-top:18px;
+padding-bottom:18px;
+}
+	</style>
+	<script>
+	function pushnotification()
+	{
+		 $.ajax({
+			url:"http://geofence.cloudapp.net/odata/Geofence",
+			type:"POST",
+			dataType:'json',
+			data: {"Lat":12.838091246549054,"Lng":77.664659880101681,"Location":"Bengalurutest123","Title":"Testing 2","Description":"Traffic Alert","Address":"3rd Cross Rd, Bengaluru, India","Radius":100.0,"CreatedDate":"2015-07-02T15:42:34Z","ExpiryDate":"2015-07-02T15:42:34Z","GeofenceIdentity":"e8820295-0770-41c6-9af5-d327d8ddf7aa"
+			},
+			success:function(data)
+			{
+				alert(data);
+			},
+			error:function(data){
+				alert(JSON.stringify(data));
+			}
+		});
+	}
+	</script>
+  </head>
+
+<body ng-app="mapsApp" ng-controller="MapCtrl">
+  
+<div class="page-header jumbotron">
+     <h2 align="center">Droplets</h2>
+</div>
+
+
+<div class="container-fluid">
+    <div class="col-md-2" id="menu" style="overflow:auto">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="icon-bar"></span>
+				 <span class="icon-bar"></span>
+				 <span class="icon-bar"></span>
+
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" >
+                 
+				 
+                 <ul class="nav" ng-repeat="marker in markers | orderBy : 'title'" >
+                    <li>  <a  style="float:left;">{{marker.title}}</a>
+						  <!--<span class="glyphicon glyphicon-pencil" aria-hidden="true" ng-click="getdata(marker.id)" ></span>-->
+						   <img src="images/map.png" width="24px" style="padding-top:9px;float:right;opacity:0.6;cursor:pointer"  ng-click="openInfoWindow($event, marker)" ></img>
+						  
+                    </li>
+				</ul>
+			</div>
+        </nav>
+    </div>
+    <div class="col-md-10" id="content">
+		<div>
+		<input id="pac-input" class="controls" type="text" placeholder="Search Box" style="width:60%;height:40px;margin-top:26px;font-size:14px;padding-left:10px;">
+			<div id="map"></div>
+			<div id="popup" class="ol-popup">
+				<br>
+				<input type="range" ng-change="updateradius()" ng-model="range" min=10 >
+				<div align="center"><span align="center">{{radiusvalue}}</span></div>
+				<select class="form-control"  placeholder="Notification Type" ng-model="alert.Title" required>
+					<option value="">Notification type</option><option value="business">Business</option>
+				</select>
+				<br>
+				<input type="hidden" ng-model="alert.Location" class="form-control">
+				<input type="hidden" ng-model="alert.Address" class="form-control">
+
+				<input type="date" ng-model="alert.CreatedDate"  placeholder="Valid From"   class="form-control" min="{{date | date:'yyyy-MM-dd'}}" value="">
+				<br>
+				<input type="date" ng-model="alert.ExpiryDate"  placeholder="Valid To"   class="form-control" min="{{alert.CreatedDate | date:'yyyy-MM-dd'}}" value=""><br>
+				<input type="hidden" ng-model="alert.GeofenceIdentity" value="1324" required  />
+				<input type="hidden" ng-model="alert.Lat" required  />
+				<input type="hidden" ng-model="alert.Lng" required   />
+				<input type="hidden" ng-model="alert.Radius" value="50" required  />
+
+				<textarea placeholder="message"  class="form-control"  ng-model="alert.Description" required></textarea><br>
+				<input type="button" class="btn btn-primary btn-block" value="save" ng-click="savedata()"><br>
+				<a href="#" id="popup-closer" class="ol-popup-closer" ng-click="closepopup()"></a>
+				<div id="popup-content"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="clearfix"></div>
+<div class="container-fluid">
+    <hr/>
+    <footer>
+        <div id="footer_container">
+          footer
+        </div>
+    </footer>
+</div> 
+  
+  </body>
+
+</html>	
